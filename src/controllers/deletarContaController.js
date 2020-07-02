@@ -3,17 +3,20 @@ const Conta = require('../models/conta');
 
 const router = express.Router();
 
-router.post('/registrarDeposito', async(req, res) => {
-    const { agencia, conta, balance } = req.body;
+router.delete('/deletarConta', async(req, res) => {
+    const { agencia, conta } = req.body;
 
     try {
         const dados = await Conta.findOne({ conta });
 
         if (dados){
-            const newBalance = balance + dados.balance;
-            await Conta.updateOne({ agencia, conta }, { $inc: { "balance": balance }});
             
-            return res.send(`Seu saldo atual é R$${newBalance}`);
+            await Conta.findOneAndDelete({ conta });
+
+            const contasAgencia = await (await Conta.find({ agencia })).length;
+
+            return res.send(`Conta deletada com sucesso! O número de contas em sua agência é ${contasAgencia}`);
+
         } else {
             return res.status(400).send({ error: 'Conta não encontrada'});
         } 

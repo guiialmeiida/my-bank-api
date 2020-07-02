@@ -3,17 +3,17 @@ const Conta = require('../models/conta');
 
 const router = express.Router();
 
-router.post('/registrarDeposito', async(req, res) => {
-    const { agencia, conta, balance } = req.body;
+router.get('/consultaSaldo', async(req, res) => {
+    const { agencia, conta } = req.body;
 
     try {
         const dados = await Conta.findOne({ conta });
 
         if (dados){
-            const newBalance = balance + dados.balance;
-            await Conta.updateOne({ agencia, conta }, { $inc: { "balance": balance }});
             
-            return res.send(`Seu saldo atual é R$${newBalance}`);
+            const saldo = dados.balance;
+
+            return res.send(`O saldo da sua conta é de R$${saldo}`);
         } else {
             return res.status(400).send({ error: 'Conta não encontrada'});
         } 

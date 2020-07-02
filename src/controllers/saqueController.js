@@ -11,11 +11,11 @@ router.post('/registrarSaque', async(req, res) => {
 
         if(dados){
             const validaBalance = dados.balance - saque - 1;
-            console.log(`Valor de validaBalance ${validaBalance}`);
+
             if (validaBalance > 0) {
                 await Conta.updateOne({ agencia, conta }, { $set: { "balance": validaBalance }});
                 
-                return res.send(`Seu saldo atual é ${validaBalance}`);
+                return res.send(`Seu saldo atual é R$${validaBalance}`);
             } else {
                 return res.status(400).send({ error: 'Seu saldo não pode ser negativo!'});
             }
